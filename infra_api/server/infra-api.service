@@ -1,0 +1,13 @@
+[Unit]
+Description=uWSGI instance to serve infra-api v2
+After=network.target
+
+[Service]
+User=ivar
+Group=www-data
+WorkingDirectory=/home/infra-api/infra_api/
+Environment="PATH=/home/infra-api/infra-api-env/bin"
+ExecStart=/home/infra-api/infra-api-env/bin/uwsgi --ini infra_api.ini
+
+[Install]
+WantedBy=multi-user.target
