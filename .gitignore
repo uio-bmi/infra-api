@@ -1,4 +1,5 @@
 infra-api-env
+*.log
 *.pyc
 *.sock
 *.egg-info
