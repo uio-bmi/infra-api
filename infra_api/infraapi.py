@@ -26,7 +26,7 @@ def github_push():
 
 		clone_url = payload['repository']['clone_url']
 		app.logger.info("Clone url: %s" % clone_url)
-		#handle_push_to_github(clone_url)
+		handle_push_to_github(clone_url)
 
 		return str(request)
 		

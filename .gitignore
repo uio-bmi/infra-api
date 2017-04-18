@@ -4,3 +4,4 @@ infra-api-env
 *.sock
 *.egg-info
 .idea
+infra_api/api.log
