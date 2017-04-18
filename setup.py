@@ -6,7 +6,9 @@ setup(name='infra_api',
       license='MIT',
       packages=['infra_api'],
       zip_safe=False,
-      install_requires=['pymysql', 'numpy', 'future', 'gitpython']
+      install_requires=['pymysql', 'numpy', 'future',
+      					'gitpython', 'nose', 'virtualenv-api'
+      				   ]
 
 )
 
