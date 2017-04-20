@@ -7,8 +7,8 @@ setup(name='infra_api',
       packages=['infra_api'],
       zip_safe=False,
       install_requires=['pymysql', 'numpy', 'future',
-      					'gitpython', 'nose', 'virtualenv-api'
-      				   ]
+      					'gitpython', 'nose', 'virtualenv-api',
+      				    'nose-htmloutput']
 
 )
 

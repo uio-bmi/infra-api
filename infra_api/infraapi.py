@@ -15,7 +15,7 @@ def hello():
 
 def github_push():
 
-    if request.method == "POST":
+	if request.method == "POST":
 		payload = json.loads(request.data)
 		repo_meta = {
 	        'name': payload['repository']['name'],
@@ -30,13 +30,13 @@ def github_push():
 
 		return str(request)
 		
-    elif request.method == "GET":
+	elif request.method == "GET":
 		f = open('log.txt', "w")
-		f.writelines(["Recived: " + str(request) + ""])
+		f.writelines(["Received: " + str(request) + ""])
 		f.close()
 		return "Recieved get : " + str(request), 200
 
-    return "<h1 style='color:blue'>Test</h1>"
+	return "<h1 style='color:blue'>Test</h1>"
 
 if __name__ == "__main__":
 	handler = RotatingFileHandler('api.log', maxBytes=10000, backupCount=1)

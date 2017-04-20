@@ -1,6 +1,7 @@
 import os
 from git import Repo
 from virtualenvapi.manage import VirtualEnvironment
+import subprocess
 
 def get_repo_name_from_github_url(url):
 	return url.split("/")[-1].split(".git")[0]
@@ -14,6 +15,10 @@ def install_project_dependencies_into_virtual_env(project_name):
 	# Install dependencies defined in requirements.txt (if exists) into virtualenv
 	repo_dir = get_repo_dir(project_name)
 	env = VirtualEnvironment('%s/virtual_env' % repo_dir, python='python3')
+	
+	# Install standard stuff that we want
+	env.install("nose")
+	env.install("nose-htmloutput")
 	
 	requirements_file = "%s/requirements.txt" % repo_dir
 		
@@ -29,7 +34,22 @@ def install_project_dependencies_into_virtual_env(project_name):
 	else:
 		print("Project %s does not have requirements.txt" % project_name)
 		
+	os.chmod(repo_dir + "/virtual_env/bin/activate", 0o665)
 
+
+def run_projects_tests(project_name):
+	repo_dir = get_repo_dir(project_name)
+	tests_dir = repo_dir + "/tests"
+	if os.path.isdir(tests_dir):
+		print("Running tests")
+		command = ["/home/infra-api/infra_api/run_project_tests.sh", project_name]
+		process = subprocess.Popen(command)
+		process.wait()
+	else:
+		print("Not running tests. No tests to run")
+		 
+		 
+	
 def clone_github_repo(clone_url):
 	repo_name = get_repo_name_from_github_url(clone_url)
 	repo_dir = get_repo_dir(repo_name)
