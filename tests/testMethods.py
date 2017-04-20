@@ -79,7 +79,11 @@ class testMethods(unittest.TestCase):
 		
 		self.assertTrue(os.path.isfile(repo_dir + "/nose_report.html"))
 
-		
+
+	def test_get_projects_list(self):
+		projects = get_projects_list()
+		self.assertTrue(isinstance(projects, list))
+	
 
 if __name__ == "__main__":
     unittest.main()

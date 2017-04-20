@@ -1,5 +1,6 @@
 from flask import Flask
 from flask import request
+from flask import jsonify
 import json
 import logging
 from logging.handlers import RotatingFileHandler
@@ -12,7 +13,6 @@ def hello():
     return "<h1 style='color:blue'>Hello There... asdf........</h1>"
 
 @app.route("/github_push", methods=['POST', 'GET'])
-
 def github_push():
 
 	if request.method == "POST":
@@ -37,6 +37,25 @@ def github_push():
 		return "Recieved get : " + str(request), 200
 
 	return "<h1 style='color:blue'>Test</h1>"
+
+
+@app.route("/projects", methods=['GET'])
+def get_projects():
+	return jsonify(get_projects_list())
+
+	
+@app.route("/test_report", methods=['GET'])
+def test_report():
+	project_name = request.args.get('project')
+	return jsonify(get_test_report_html(project_name))
+	
+	
+@app.after_request
+def after_request(response):
+  response.headers.add('Access-Control-Allow-Origin', '*')
+  response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+  response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+  return response	
 
 if __name__ == "__main__":
 	handler = RotatingFileHandler('api.log', maxBytes=10000, backupCount=1)

@@ -3,12 +3,14 @@ from git import Repo
 from virtualenvapi.manage import VirtualEnvironment
 import subprocess
 
+REPOS_DIR = "/home/github-repos/"
+
 def get_repo_name_from_github_url(url):
 	return url.split("/")[-1].split(".git")[0]
 
 
 def get_repo_dir(project_name):
-	return "/home/github-repos/%s/" % project_name
+	return "%s%s/" % (REPOS_DIR, project_name)
 
 
 def install_project_dependencies_into_virtual_env(project_name):
@@ -87,5 +89,28 @@ def handle_push_to_github(clone_url):
 	
 	return True
 	
+
+def get_projects_list():
+	return os.walk(REPOS_DIR).next()[1]
+
+
+def get_test_report_html(project_name):
+	report_file = get_repo_dir(project_name) + "/nose_report.html"
+	if os.path.isfile(report_file):
+		f = open(report_file)
+		html = f.read()
+		
+		# Get everything between <body> and </body> and <script> and </script>
+		body = html.split("<body>")[1].split("</body>")[0]
+		script = html.split("<script>")[1].split("</script>")[0]
+		html = body + script
+		f.close()
+	else:
+		html = "No report"
+			
+	return html
+	
+	
+
 
 
