@@ -21,6 +21,7 @@ def install_project_dependencies_into_virtual_env(project_name):
 	# Install standard stuff that we want
 	env.install("nose")
 	env.install("nose-htmloutput")
+	env.install("coverage")
 	
 	requirements_file = "%s/requirements.txt" % repo_dir
 		
@@ -40,9 +41,7 @@ def install_project_dependencies_into_virtual_env(project_name):
 
 
 def run_projects_tests(project_name):
-	repo_dir = get_repo_dir(project_name)
-	tests_dir = repo_dir + "/tests"
-	if os.path.isdir(tests_dir):
+	if project_has_tests(project_name):
 		print("Running tests")
 		command = ["/home/infra-api/infra_api/run_project_tests.sh", project_name]
 		process = subprocess.Popen(command)
@@ -94,7 +93,7 @@ def get_projects_list():
 	return os.walk(REPOS_DIR).next()[1]
 
 
-def get_test_report_html(project_name):
+def get_report_html(project_name):
 	report_file = get_repo_dir(project_name) + "/nose_report.html"
 	if os.path.isfile(report_file):
 		f = open(report_file)
@@ -103,13 +102,53 @@ def get_test_report_html(project_name):
 		# Get everything between <body> and </body> and <script> and </script>
 		body = html.split("<body>")[1].split("</body>")[0]
 		script = html.split("<script>")[1].split("</script>")[0]
-		html = body + script
+		html = body + "<script>" + script + "</script>"
 		f.close()
 	else:
 		html = "No report"
 			
 	return html
+
+
+def project_has_tests(project_name):
+	repo_dir = get_repo_dir(project_name)
+	tests_dir = repo_dir + "/tests"
+	if os.path.isdir(tests_dir):
+		return True
+	else:
+		return False
+		
+def project_has_failed_tests(project_name):
+	if project_has_tests(project_name):
+		report = get_report_html(project_name)
+		if "0 failed, 0 errors" in report:
+			return False
+		return True
+	return False
+		
+def get_project_overview_as_html(project_name):
+	github_url = "http://github.com/uio-cels/project_name"
+	html = "<div class='alert alert-info'>Github link: <a href='%s' target='_blank'>%s</a></div>" % (github_url, github_url)
 	
+	if not project_has_tests(project_name):
+		html += "<div class='alert alert-danger'>Project has no tests.</div>"
+	else:
+		if project_has_failed_tests(project_name):
+			html += "<div class='alert alert-danger'>Some tests are failing! See details below.</div>"
+		else:
+			html += "<div class='alert alert-success'>All tests are passing.</div>"	
+		
+		html += '<h2 class="sub-header">Test details</h2>'
+		html += "<iframe src='test_reports/%s.html' style='width: 100%%; height: 600px;'></iframe>" % project_name
+		
+		
+		html += '<h2 class="sub-header">Coverage</h2>'	
+		html += "<iframe src='coverage_reports/%s/index.html' style='width: 100%%; height: 600px;'></iframe>" % project_name
+		
+	
+	return html
+
+
 	
 
 

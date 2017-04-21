@@ -43,11 +43,16 @@ def github_push():
 def get_projects():
 	return jsonify(get_projects_list())
 
+@app.route("/project_overview", methods=['GET'])
+def project_overview():
+	project_name = request.args.get('project')
+	return jsonify(get_project_overview_as_html(project_name))
+
 	
 @app.route("/test_report", methods=['GET'])
 def test_report():
 	project_name = request.args.get('project')
-	return jsonify(get_test_report_html(project_name))
+	return jsonify(get_report_html(project_name))
 	
 	
 @app.after_request
